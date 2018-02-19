@@ -135,7 +135,7 @@ For example,
 ```
 
 ### Where to find the result:
-The final results could be found in `--outFolder`/*`--FileID`*.txt/pdf. 
+The final results could be found under the folder of `--outFolder`. The txt file could be `--FileID*`.txt if `--SaveTest` is set to 1. The pdf file could be `rplot_--FileID*`.pdf which saves top `--topN` positions of the ranking. 
 
 
 
