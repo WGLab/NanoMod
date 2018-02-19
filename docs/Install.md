@@ -14,7 +14,7 @@
 	        + scales
 
 ## Install:
-	* git clone https://github.com/WGLab/NanoMod
+	* git clone https://github.com/WGLab/NanoMod.
         * The script to be run is in bin/NanoMod.py
 	
 ## Usage:
