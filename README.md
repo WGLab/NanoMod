@@ -3,9 +3,9 @@
 NanoMod is a novel computational tool for the detection of DNA modifications using Nanopore long-read sequencing data. The evaluation on simulation data with different types of modifications and on a methylation data of E. coli suggested that NanoMod achieved better performance than other existing tools in detecting modifications without training data. 
 
 ## Features
-### De novo modification detection without training process
-### Can detect any possible type of modification, not only for a specific type of modification such as 5-mC and 6-mA. 
-### Integrate several stastical testing method, such as Mann–Whitney U test, Student’s T test and Kolmogorov-Smirnov test for single bases, and also combined testing method such as Stouffer’s method and Fisher’s method.
+    + De novo modification detection without training process
+    + Can detect any possible type of modification, not only for a specific type of modification such as 5-mC and 6-mA. 
+    + Integrate several stastical testing method, such as Mann–Whitney U test, Student’s T test and Kolmogorov-Smirnov test for single bases, and also combined testing method such as Stouffer’s method and Fisher’s method.
 
 ## Methodology of NanoMod
 
