@@ -8,9 +8,10 @@
 	* BWA MEM
 	* HDF5
 	* rpy2
-	* ggplot2
-	* gridExtra
-	* scales
+	* R package:
+	        + ggplot2
+	        + gridExtra
+	        + scales
 
 ## Install:
 	* git clone https://github.com/WGLab/NanoMod
