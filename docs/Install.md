@@ -1,23 +1,21 @@
 
 ## Prerequisites:
 	* Python 2.7
-	* GCC 4.4.7
 	* python packages:
-		+ peakutils 1.0.3
-		+ hmmlearn
-		+ sklearn (sklearn.mixture.GaussianMixture)
-		+ biopython (strongly recommend 1.66 if possible)
-	* SWIG
-	* make
+	        + h5py
+		+ scipy
+		+ numpy
 	* BWA MEM
+	* HDF5
+	* rpy2
+	* ggplot2
+	* gridExtra
+	* scales
 
-## Step 1:
-	* git clone https://github.com/WGLab/RepeatHMM
-
-## Step 2:
-	* go to bin/scripts/UnsymmetricPairAlignment
-	* type "make" and then enter
-
+## Install:
+	* git clone https://github.com/WGLab/NanoMod
+        * The script to be run is in bin/NanoMod.py
+	
 ## Usage:
- For how to use them, please refer to [Usage](https://github.com/WGLab/RepeatHMM/blob/master/docs/Usage.md)
+ For how to use them, please refer to [Usage](https://github.com/WGLab/NanoMod/blob/master/docs/Usage.md)
 
