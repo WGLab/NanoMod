@@ -29,4 +29,4 @@ If you have any questions/issues/bugs, please post them on [GitHub](https://gith
 
 ## Reference
 
-Liu, Q., Georgieva, D.C., Egli, D. and Wang, K. (2018) NanoMod: a computational tool to detect DNA modifications using Nanopore long-read sequencing data. [bioRxiv](https://www.biorxiv.org/content/early/2018/03/05/277178) doi: https://doi.org/10.1101/277178
+Liu, Q., Georgieva, D.C., Egli, D. and Wang, K. (2018) NanoMod: a computational tool to detect DNA modifications using Nanopore long-read sequencing data. [bioRxiv](https://www.biorxiv.org/content/early/2018/03/05/277178), doi: https://doi.org/10.1101/277178
