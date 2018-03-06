@@ -29,4 +29,4 @@ If you have any questions/issues/bugs, please post them on [GitHub](https://gith
 
 ## Reference
 
-Liu Qian, Daniela C. Georgieva, Dietrich M. Egli, Kai Wang. NanoMod: a computational tool to detect DNA modifications using Nanopore long-read sequencing data.
+Liu Qian, Daniela C. Georgieva, Dietrich M. Egli, Kai Wang. NanoMod: a computational tool to detect DNA modifications using Nanopore long-read sequencing data. [preprint](https://www.biorxiv.org/content/early/2018/03/05/277178)
