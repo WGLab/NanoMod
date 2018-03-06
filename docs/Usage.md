@@ -70,9 +70,11 @@ The annotation information will be writen back to each FAST5 file. One can use `
 ### Indel correction process:
 How to conduct insertion and deletion correction is introduced in the figure below:
 <img src="https://user-images.githubusercontent.com/16017780/37037606-a718119a-2120-11e8-8b53-3f1080424965.jpg" width="600" height="600" />
+
 An example of the deletion correction procedure in NanoMod. X axis represents time of signal acquisition, and y axis denotes detected signal values by Nanopore sequencers before standardization. ‘Albacore’ represents a sequence of bases called based on original events before error correction, and ‘Known’ represents the known sequence. Each red horizontal bar represents an event split by vertical lines. ‘-’ in ‘Albacore’ suggests a deletion. The region shadowed in green shows the deleted bases together with one upstream and one downstream neighbors.
 
 <img src="https://user-images.githubusercontent.com/16017780/37037607-a72372ba-2120-11e8-8a30-677efe579006.jpg" width="600" height="600" />
+
 An example of the insertion correction procedure in NanoMod. The region shadowed in yellow shows the insertion base together with one upstream and one downstream neighbors. For other notations, see the figure above.
 
 
