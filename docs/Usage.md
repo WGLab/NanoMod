@@ -1,6 +1,6 @@
 The inputs of NanoMod are two groups of FAST5 files and a known sequence. One group of FAST5 files are from a tested sample with modifications, while the other group of FAST5 files are from a control sample without modifications. FAST5 files are the output of Nanopore sequencing equipment. 
 
-NanoMod needs `Events` data in FAST5 files. It is no `Event` data in FAST5 files, one need to run Albacore (1.0<version<v2.0 is strongly recommended) on their data before running NanoMod. Please refer to Nanopore community for help about how to download/install/run Albacore.
+NanoMod needs `Events` data in FAST5 files. If there is no `Event` data in FAST5 files, one needs to run Albacore (1.0<version<v2.0 is strongly recommended) on their data before running NanoMod. Please refer to Nanopore community for help about how to download/install/run Albacore.
 
 # The step of NanoMod
 
@@ -66,6 +66,16 @@ For example,
 
 ### Output:
 The annotation information will be writen back to each FAST5 file. One can use `h5dump FAST5file` or `h5ls -r FAST5file` to see the detail. 
+
+### Indel correction process:
+How to conduct insertion and deletion correction is introduced in the figure below:
+<img src="https://user-images.githubusercontent.com/16017780/37037606-a718119a-2120-11e8-8b53-3f1080424965.jpg" width="600" height="600" />
+
+An example of the deletion correction procedure in NanoMod. X axis represents time of signal acquisition, and y axis denotes detected signal values by Nanopore sequencers before standardization. ‘Albacore’ represents a sequence of bases called based on original events before error correction, and ‘Known’ represents the known sequence. Each red horizontal bar represents an event split by vertical lines. ‘-’ in ‘Albacore’ suggests a deletion. The region shadowed in green shows the deleted bases together with one upstream and one downstream neighbors.
+
+<img src="https://user-images.githubusercontent.com/16017780/37037607-a72372ba-2120-11e8-8a30-677efe579006.jpg" width="600" height="600" />
+
+An example of the insertion correction procedure in NanoMod. The region shadowed in yellow shows the insertion base together with one upstream and one downstream neighbors. For other notations, see the figure above.
 
 
 ## 2. `python NanoMod.py detect`
