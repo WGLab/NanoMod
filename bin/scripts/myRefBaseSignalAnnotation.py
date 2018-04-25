@@ -256,7 +256,7 @@ def getRawInfo(moptions, sp_param):
 
       #sp_param["channel_info"] = {'digitisation':channel_info['digitisation'], 'offset':channel_info['offset'], 'range':channel_info['range'], 'sampling_rate':channel_info['sampling_rate'], 'channel_number':channel_info['channel_number']}
    except:
-      raiseError(("No Raw_reads/Signal data %s for %s" % (fast5_rawReads)), sp_param, "No Raw_reads/Signal")
+      raiseError(("No Raw_reads/Signal data %s for %s" % (fast5_rawReads, sp_param['mfile_path'])), sp_param, "No Raw_reads/Signal")
 
 def getFast5Info(moptions, sp_param):
    get_channel_info(moptions, sp_param)

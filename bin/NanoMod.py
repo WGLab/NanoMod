@@ -417,7 +417,7 @@ parser_annotate.add_argument("--files_per_thread", type=int, default=300, help="
 parser_annotate.add_argument("--basecall_1d", default="Basecall_1D_000", help="Path for basecall_1d. Default: Basecall_1D_000")
 parser_annotate.add_argument("--basecall_2strand", default="BaseCalled_template", help="Path for basecall_2strand. Default: BaseCalled_template")
 parser_annotate.add_argument("--MinNumSignal", type=int, default=4, help="Mininum number of signals for an event. Default:4")
-parser_annotate.add_argument("--recursive", type=int, default=1, choices=[0,1], help="Recurise to find fast5 files. Default:1")
+parser_annotate.add_argument("--recursive", type=int, default=0, choices=[0,1], help="Recurise to find fast5 files. Default:0")
 
 
 parser_annotate.set_defaults(func=mAnnotate);
