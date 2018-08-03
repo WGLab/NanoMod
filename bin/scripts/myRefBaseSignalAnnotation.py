@@ -1080,7 +1080,7 @@ def fix_repeat_del(base_map_info, moptions, sp_param, f5f):
             indel_pos[bmi] = (event_ind, 1)
             #ins_pos[bmi] = event_ind
             if moptions['outLevel']<=myCom.OUTPUT_DEBUG:
-               print '\tNonequal', bmi, event_ind, len(indel_pos), event_ind+len(indel_pos), '|', len(del_pos), len(ins_pos), len(del_pos)+len(ins_pos);
+               print '\tNonequal', bmi, event_ind, len(indel_pos), event_ind+len(indel_pos);
        
       if not base_map_info['readbase'][bmi]=='-':
          last_non_indel = bmi; last_is_repeat = False;
