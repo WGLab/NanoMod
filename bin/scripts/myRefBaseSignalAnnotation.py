@@ -388,7 +388,7 @@ def getRefSeq(moptions, sp_param, rname):
       seqinfo = map(string.strip, temp_seq.readlines());
       temp_seq.close();
 
-      sp_param['ref_info'][rname] = string.strip(''.join(seqinfo[1:]))
+      sp_param['ref_info'][rname] = string.strip(''.join(seqinfo[1:])).upper()
 
 def handle_record(moptions, sp_param, f5align, f5data):
    alignkeys = f5align.keys();
