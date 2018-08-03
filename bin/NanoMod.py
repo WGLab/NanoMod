@@ -113,9 +113,10 @@ def mDetect(margs):
    if not margs.Pos=="":
       mpos = margs.Pos.split(":")
       moptions["Chr"] = mpos[0]
-      moptions["Pos"] = int(mpos[1])-1
-      if moptions["Pos"]<0:
-         ErrorMessage = ErrorMessage + ("\n\tThe position (%d) of interest should not be less than 0" % moptions["Pos"])
+      if len(mpos)>1:
+         moptions["Pos"] = int(mpos[1])-1
+         if moptions["Pos"]<0:
+            ErrorMessage = ErrorMessage + ("\n\tThe position (%d) of interest should not be less than 0" % moptions["Pos"])
 
    #moptions["MinCoverage"] = margs.MinCoverage
    #if moptions["MinCoverage"]<3:
