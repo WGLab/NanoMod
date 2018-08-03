@@ -955,7 +955,8 @@ def find_sp(pvsignals, gipk, refstr,readstr, expectna, Resegment_signal_wind, gr
          dif_rank.append((pvi, round(np.absolute(np.mean(pvsignals[pvi-Resegment_signal_wind:pvi])-np.mean(pvsignals[pvi:pvi+Resegment_signal_wind])), 9)))
          if moptions['outLevel']<=cur_level: #myCom.OUTPUT_INFO:
          #if moptions['outLevel']<=myCom.OUTPUT_INFO:
-            print '\tInfo', pvi, ('%.3f ' % pvsignals[pvi]), len(pvsignals), Resegment_signal_wind, 'within', withinnum, np.round(withdif/(Resegment_signal_wind*(Resegment_signal_wind-1)), 6), 'betw', btwnum, np.round(btwdif/(Resegment_signal_wind*Resegment_signal_wind), 6), 'expected-cur', expectna, dif_rank[-1]
+            #print '\tInfo', pvi, ('%.3f ' % pvsignals[pvi]), len(pvsignals), Resegment_signal_wind, 'within', withinnum, np.round(withdif/(Resegment_signal_wind*(Resegment_signal_wind-1)), 6), 'betw', btwnum, np.round(btwdif/(Resegment_signal_wind*Resegment_signal_wind), 6), 'expected-cur', expectna, dif_rank[-1]
+            print '\tInfo', pvi, ('%.3f ' % pvsignals[pvi]), len(pvsignals), Resegment_signal_wind, 'expected-cur', expectna, dif_rank[-1]
 
       #if moptions['outLevel']<=myCom.OUTPUT_INFO:
       if moptions['outLevel']<=cur_level:
@@ -1111,7 +1112,7 @@ def fix_repeat_del(base_map_info, moptions, sp_param, f5f):
       # for test purpose
       if moptions['outLevel']<=myCom.OUTPUT_DEBUG:
          if not bmi==event_ind+len(indel_pos) and firstdif: 
-            print '\tNonequal', bmi, event_ind, len(indel_pos), event_ind+len(indel_pos), '|', len(del_pos), len(ins_pos); 
+            print '\tNonequal', bmi, event_ind, len(indel_pos), event_ind+len(indel_pos); 
             print '\t', ''.join(base_map_info['refbase'][bmi-10:bmi]), ''.join(base_map_info['refbase'][bmi:bmi+10])
             print '\t', ''.join(base_map_info['readbase'][bmi-10:bmi]), ''.join(base_map_info['readbase'][bmi:bmi+10])
             firstdif = False
