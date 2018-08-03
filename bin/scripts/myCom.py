@@ -14,10 +14,13 @@ na_bp = {"A":"T", \
          "a":"t", \
          "c":"g", \
          "g":"c", \
-         "t":"a" \
+         "t":"a", \
+         "N":"N", \
+         "n":"n" \
          }
 
 acgt = ('A', 'C', 'G', 'T', 'a', 'c', 'g', 't')
+acgt = ('A', 'C', 'G', 'T', 'a', 'c', 'g', 't', 'N', 'n')
 
 def getComplementary(na):
    com_na = []
