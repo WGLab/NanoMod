@@ -508,9 +508,13 @@ def handle_record(moptions, sp_param, f5align, f5data):
      if firstmatch==None or lastmatch==None or firstmatch<0 or lastmatch<0:
         if moptions['outLevel']<=myCom.OUTPUT_WARNING:
            print 'match-Error!!! no first and/or last match', f5data[readk][3],
-           if firstmatch<0: print ('firstmatch=%d' % firstmatch),
-           if lastmatch<0: print ('lastmatch%d' % lastmatch),
+           if firstmatch==None: print('firstmatch=None'),
+           elif firstmatch<0: print ('firstmatch=%d' % firstmatch),
+           if lastmatch==None: print ('lastmatch=None'),
+           elif lastmatch<0: print ('lastmatch=%d' % lastmatch),
            print ''
+        moptions["Error"]['Incorrect Alignment'].append(f5data[readk][3])
+        continue
 
      #if moptions['outLevel']<=myCom.OUTPUT_WARNING:
      if moptions['outLevel']<=myCom.OUTPUT_DEBUG:
