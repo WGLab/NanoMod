@@ -332,7 +332,7 @@ com_group_for_comparison.add_argument("--WeightsDif", type=float, default=2.0, h
 com_group_for_comparison.add_argument("--testMethod", default="ks", choices=['fisher', 'stouffer', 'ks'], help="Which method is used for test statistics: fisher, stouffer or KS-test(default). ")
 #com_group_for_comparison.add_argument("--rankUse", default='st', choices=['st', 'pv'], help="Which criterion is used for ranking: 'st':statistics(default); 'pv':p-value")
 com_group_for_comparison.add_argument("--rankUse", default='pv', choices=['st', 'pv'], help="Which criterion is used for ranking: 'st':statistics; 'pv':p-value(default)")
-com_group_for_comparison.add_argument("--SaveTest", type=int, default=0, choices=[0,1], help="Whether significant test would be save. Default: 0 (not save)")
+com_group_for_comparison.add_argument("--SaveTest", type=int, default=1, choices=[0,1], help="Whether significant test would be save. Default: 0 (not save)")
 com_group_for_comparison.add_argument("--RegionRankbyST", type=int, default=0, choices=[0,1], help="Rank region of window according to the stastitcs of the region."); #RegionRankbyST percentile WindOvlp NA
 com_group_for_comparison.add_argument("--percentile", type=float, default=0.1, help="The smallest percentile of p-values in the region is used for ranking. Only used when RegionRankbyST=1.")
 com_group_for_comparison.add_argument("--WindOvlp", type=int, default=0, choices=[0,1], help="Whether two windows are overlapped. Default: 0 (not save). The overlapping size will be half of window. Only used when RegionRankbyST=1.")

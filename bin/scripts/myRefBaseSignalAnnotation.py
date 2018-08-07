@@ -209,7 +209,21 @@ def getEvent(moptions, sp_param):
               print ('cmean=%8.3f cstd=%8.3f for start=%10d length=%10d' % (cmean, cstdv, m_event['start'][i], m_event['length'][i]))
 
      elif sp_param['used_albacore_version']==2:
-        raise RuntimeError, ("Albacore 2.x is not supported yet will be implemented later")
+        m_event = []; 
+        pre_i = 0; pre_length = events_data['length'][pre_i].astype('uint64');
+        for cur_i in range(1, len(events_data)):
+           if events_data['move'][cur_i]>0:
+              m_event.append( (round(events_data['mean'][pre_i],3), round(events_data['stdv'][pre_i],3), events_data['start'][pre_i], pre_length, events_data['model_state'][pre_i]) )
+
+              pre_i = cur_i; pre_length = events_data['length'][pre_i].astype('uint64'); 
+           else:
+              pre_length += events_data['length'][cur_i].astype('uint64'); 
+        m_event.append( (round(events_data['mean'][pre_i],3), round(events_data['stdv'][pre_i],3), events_data['start'][pre_i], pre_length, events_data['model_state'][pre_i]) )
+
+        m_event = np.array(m_event, dtype=[('mean', '<f4'), ('stdv', '<f4'), ('start', np.uint64), ('length', np.uint64), ('model_state', 'S5')])
+        sp_param['m_event'] = m_event
+        sp_param['m_event_basecall'] = ''.join([event_model_state[2] for event_model_state in m_event['model_state']]);
+        #raise RuntimeError, ("Albacore 2.x is not supported yet will be implemented later")
      else:
         raise RuntimeError, ("This version of Albacore is not supported. Please use the version of Albacore 1.x or 2.x")
 
@@ -652,6 +666,7 @@ def save_annotation(annotated_info, m_event, base_map_info, f5f, match_info, map
       nanomo_correct_alignment_group.attrs['num_deletions'] = match_info[4]
       nanomo_correct_alignment_group.attrs['num_matches'] = match_info[5]
       nanomo_correct_alignment_group.attrs['num_mismatches'] = match_info[2]
+      nanomo_correct_alignment_group.attrs['Bcinfo'] = moptions['basecall_1d']
 
       nanomo_correct_alignment_group.create_dataset(myCom.rawRead_alignment_base, data=(base_map_info['readbase'] if map_info[0]=='+' else map(get_complement, base_map_info['readbase'])[::-1]), compression="gzip")
       nanomo_correct_alignment_group.create_dataset(myCom.rawGenome_alignment_base, data=(base_map_info['refbase'] if map_info[0]=='+' else map(get_complement, base_map_info['refbase'])[::-1]), compression="gzip")

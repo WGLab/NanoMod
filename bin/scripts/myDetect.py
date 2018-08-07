@@ -38,7 +38,13 @@ def mReadSignalBase(moptions):
       return
 
    tocon = True;
-   with h5py.File(fn, 'r') as mf5:
+   try:
+      mf5 =  h5py.File(fn, 'r')
+   except:
+      print("cannot open "+fn)
+      mf5 = None
+   if not mf5==None:
+   #with h5py.File(fn, 'r') as mf5:
       #if fn[:len(moptions['ds2'][1])] == moptions['ds2'][1]:
       #   print fn, mf5, myFast5.rawAlignment_full
       #if mf5.__contains__(myFast5.rawAlignment_full):
