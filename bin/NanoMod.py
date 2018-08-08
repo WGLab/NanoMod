@@ -301,7 +301,7 @@ def mAnnotate(margs):
    moptions['basecall_1d'] = margs.basecall_1d
    moptions['basecall_2strand'] = margs.basecall_2strand
    moptions['recursive'] = margs.recursive 
-   moptions['alignStr'] = 'bwa'
+   moptions['alignStr'] = margs.alignStr; #'bwa'
 
    if not ErrorMessage=="":
       ErrorMessage = "Please provide correct parameters" + ErrorMessage
@@ -421,7 +421,7 @@ parser_annotate.add_argument("--basecall_1d", default="Basecall_1D_000", help="P
 parser_annotate.add_argument("--basecall_2strand", default="BaseCalled_template", help="Path for basecall_2strand. Default: BaseCalled_template")
 parser_annotate.add_argument("--MinNumSignal", type=int, default=4, help="Mininum number of signals for an event. Default:4")
 parser_annotate.add_argument("--recursive", type=int, default=0, choices=[0,1], help="Recurise to find fast5 files. Default:0")
-
+parser_annotate.add_argument("--alignStr", type=str, default='bwa', choices=["bwa","minimap2"], help="Alignment tools (bwa or minimap2 is supported). Default: bwa")
 
 parser_annotate.set_defaults(func=mAnnotate);
 

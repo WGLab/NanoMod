@@ -339,7 +339,10 @@ def correctAndAnnotate(moptions, f5files):
       print ("Write consuming time %d" % (end_time-start_time))
    
    temp_sam = tempfile.NamedTemporaryFile()
-   cmd_opt = ['mem', '-x', 'ont2d', '-v', '1', '-t', '1', moptions['Ref'], temp_fa.name]
+   if moptions['alignStr']=='bwa':
+      cmd_opt = ['mem', '-x', 'ont2d', '-v', '1', '-t', '1', moptions['Ref'], temp_fa.name]
+   else:
+      cmd_opt = ['-ax', 'map-ont', moptions['Ref'], temp_fa.name]
    returncode = subprocess.call([moptions['alignStr'],]+cmd_opt, stdout=temp_sam)
    if not returncode==0:
       print ('Fatal Error!!! returncode is non-zero(%d) for "%s"' % (returncode, curcmd))
