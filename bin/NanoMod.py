@@ -53,11 +53,13 @@ def mCommonParam(margs):
    moptions["FileID"] = margs.FileID
 
    moptions['outFolder'] = margs.outFolder
-   if moptions['outFolder']==None or (not os.path.isdir(moptions['outFolder'])):
-      ErrorMessage = ErrorMessage + ("\n\tThe output folder (%s) does not exist" % moptions['outFolder'])
-   else:
-      #if moptions['outFolder'][-1] not in ['/', '\\']: moptions['outFolder'] = moptions['outFolder'] + '/'
-      moptions['outFolder'] = format_last_letter_of_folder(moptions['outFolder'])
+   if not os.path.isdir(moptions['outFolder']):
+      os.system('mkdir -p '+moptions['outFolder'])
+   #if moptions['outFolder']==None or (not os.path.isdir(moptions['outFolder'])):
+   #   ErrorMessage = ErrorMessage + ("\n\tThe output folder (%s) does not exist" % moptions['outFolder'])
+   #else:
+   #   #if moptions['outFolder'][-1] not in ['/', '\\']: moptions['outFolder'] = moptions['outFolder'] + '/'
+   #   moptions['outFolder'] = format_last_letter_of_folder(moptions['outFolder'])
 
    moptions["MinCoverage"] = margs.MinCoverage
    if moptions["MinCoverage"]<3:
