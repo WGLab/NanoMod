@@ -473,7 +473,7 @@ def save_test(moptions):
    if moptions['outLevel']<=OUTPUT_ERROR: print 'Test data is saved in', txtfile
    txtwriter = open(txtfile, 'w')
    for mostp in moptions['sign_test']:
-      txtwriter.write('%s %s %d %s %.3f %.3E %.3f %.3E %.3f %.3E' % (mostp[0][0], mostp[0][1], mostp[0][2], mostp[0][3], mostp[1][0][0], mostp[1][0][1], mostp[1][1][0], mostp[1][1][1], mostp[1][2][0], mostp[1][2][1]))
+      txtwriter.write('%s %s %d %s %.3f %.3E %.3f %.3E %.3f %.3E' % (mostp[0][0], mostp[0][1], mostp[0][2]+1, mostp[0][3], mostp[1][0][0], mostp[1][0][1], mostp[1][1][0], mostp[1][1][1], mostp[1][2][0], mostp[1][2][1]))
       if (moptions["neighborPvalues"]>0 and (not moptions["testMethod"]=="ks")):
          txtwriter.write(' %.3f %.3E\n' % (mostp[1][3][0], mostp[1][3][1]))
       else:
