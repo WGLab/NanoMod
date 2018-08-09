@@ -331,7 +331,7 @@ com_group_for_comparison.add_argument("--MinCoverage", type=int, default=5, help
 com_group_for_comparison.add_argument("--topN", type=int, default=30, help="The topN most significance test. Default: 30")
 com_group_for_comparison.add_argument("--neighborPvalues", type=int, default=2, help="The number of neighbor p-values are used for combining p-values using fisher's or stouffer's methods. Default:2.")
 com_group_for_comparison.add_argument("--WeightsDif", type=float, default=2.0, help="The difference of two adjacent neighbors when weight stouffer's methods are used. Maximum weight for the center position is 100, and the weights of a position are obtained by dividing the weights of position closest to the center by WeightsDif. Default:2.0.")
-com_group_for_comparison.add_argument("--testMethod", default="ks", choices=['fisher', 'stouffer', 'ks'], help="Which method is used for test statistics: fisher, stouffer or KS-test(default). ")
+com_group_for_comparison.add_argument("--testMethod", default="stouffer", choices=['fisher', 'stouffer', 'ks'], help="Which method is used for test statistics: fisher, stouffer (default) or KS-test. ")
 #com_group_for_comparison.add_argument("--rankUse", default='st', choices=['st', 'pv'], help="Which criterion is used for ranking: 'st':statistics(default); 'pv':p-value")
 com_group_for_comparison.add_argument("--rankUse", default='pv', choices=['st', 'pv'], help="Which criterion is used for ranking: 'st':statistics; 'pv':p-value(default)")
 com_group_for_comparison.add_argument("--SaveTest", type=int, default=1, choices=[0,1], help="Whether significant test would be save. Default: 0 (not save)")
