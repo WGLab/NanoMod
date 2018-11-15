@@ -127,8 +127,8 @@ def getEvent(moptions, sp_param):
         move0_left = 0; move0_right = len(events_data)-1;
         while move0_left<move0_right:
            if events_data['move'][move0_left]==0: move0_left += 1;
-           elif not (events_data['move'][move0_left] + events_data['move'][move0_left+1] > 0 and \
-                events_data['stdv'][move0_left]<2 and events_data['stdv'][move0_left+1]<2): move0_left += 1;
+           #elif not (events_data['move'][move0_left] + events_data['move'][move0_left+1] > 0 and \
+           #     events_data['stdv'][move0_left]<2 and events_data['stdv'][move0_left+1]<2): move0_left += 1;
            else: break;
         if move0_left>move0_right-20:
            #if moptions['outLevel']<=myCom.OUTPUT_INFO:
@@ -141,8 +141,8 @@ def getEvent(moptions, sp_param):
            return;
         while move0_right>move0_left:
            if events_data['move'][move0_right]==0: move0_right -= 1
-           elif not (events_data['move'][move0_right] + events_data['move'][move0_right-1] > 0 and \
-                events_data['stdv'][move0_right]<2 and events_data['stdv'][move0_right-1]<2): move0_right -= 1
+           #elif not (events_data['move'][move0_right] + events_data['move'][move0_right-1] > 0 and \
+           #     events_data['stdv'][move0_right]<2 and events_data['stdv'][move0_right-1]<2): move0_right -= 1
            else: break;
         if move0_right<move0_left+20:
            #if moptions['outLevel']<=myCom.OUTPUT_INFO:
