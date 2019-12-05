@@ -478,7 +478,7 @@ def save_test(moptions):
          txtwriter.write(' %.3f %.3E\n' % (mostp[1][3][0], mostp[1][3][1]))
       else:
          txtwriter.write('\n')
-
+   txtwriter.close()
 
 def ReadAllFast5(moptions):
    #neighbors =  moptions["window"]
