@@ -49,10 +49,15 @@ from myCom import *
 
 basecall_event_full = ("/%s/%s/%s/%s" % (analyses_base,basecall_1D_base,basecall_template_base,basecall_events_base))
 basecall_fastq_full = ("/%s/%s/%s/%s" % (analyses_base,basecall_1D_base,basecall_template_base,basecall_fastq_base))
+basecall_move_full = ("/%s/%s/%s/%s" % (analyses_base,basecall_1D_base,basecall_template_base,basecall_move_base))
 
 def ReadEvents(mf5):
    if mf5.__contains__(basecall_event_full):
       return mf5[analyses_base][basecall_1D_base][basecall_template_base][basecall_events_base]
+
+def ReadMove(mf5):
+   if mf5.__contains__(basecall_move_full):
+      return mf5[analyses_base][basecall_1D_base][basecall_template_base][basecall_move_base]
 
 def ReadFastQ(mf5):
    if mf5.__contains__(basecall_fastq_full):
@@ -119,5 +124,3 @@ def ReadMapInfoInRef(mf5):
    mapped_strand= align_info[map_strand_str]
 
    return [mapped_chrom, int(mapped_start), mapped_strand]
-
-

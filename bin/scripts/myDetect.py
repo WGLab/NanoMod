@@ -48,7 +48,7 @@ def mReadSignalBase(moptions):
       #if fn[:len(moptions['ds2'][1])] == moptions['ds2'][1]:
       #   print fn, mf5, myFast5.rawAlignment_full
       #if mf5.__contains__(myFast5.rawAlignment_full):
-      
+
       noerror = True;
       try:
          if not mf5.__contains__(myFast5.rawAlignment_full): noerror = False
@@ -67,33 +67,50 @@ def mReadSignalBase(moptions):
 
          #genome_fa = myFast5.ReadNanoraw_Genome_alignment(mf5)
          #genome_fa_pure = genome_fa.replace('-', '')
-        
+
          #print fn,
          nanoraw_events = myFast5.ReadNanoraw_events(mf5)
 
          if moptions.has_key('Chr') and (not moptions["Chr"]==mapped_chrom):
             tocon = False;
+         if tocon and moptions.has_key("Pos2"):
+            if mapped_start>moptions["Pos2"] or mapped_start+len(nanoraw_events)<moptions["Pos"]:
+               tocon = False;
+
          if tocon and moptions.has_key("start_pos") and moptions.has_key("end_pos"):
             if moptions.has_key("checkN") and moptions[moptions['cur_wrkBase']]['norm_mean'].has_key((moptions["Chr"], mapped_strand)):
                mposkeys = moptions[moptions['cur_wrkBase']]['norm_mean'][(moptions["Chr"], mapped_strand)].keys();
                if len(mposkeys)>0 and len(moptions[moptions['cur_wrkBase']]['norm_mean'][(moptions["Chr"], mapped_strand)][mposkeys[0]])>=moptions["checkN"]:
                   tocon = False;
-            #if tocon and (mapped_start>moptions["start_pos"] or mapped_start+len(genome_fa_pure)<moptions["end_pos"]): 
+            #if tocon and (mapped_start>moptions["start_pos"] or mapped_start+len(genome_fa_pure)<moptions["end_pos"]):
             if tocon and (mapped_start>moptions["start_pos"] or mapped_start+len(nanoraw_events)<moptions["end_pos"]):
               tocon = False;
-    
-         #print mapped_chrom, mapped_start, mapped_strand    
+
+         #print mapped_chrom, mapped_start, mapped_strand
+         if moptions['min_lr_nb'] < 1:
+            if len(nanoraw_events)<moptions['min_lr']: 
+               print("CheckReadMappedLength={} {}".format(fn, len(nanoraw_events)))
+               tocon = False;
+         else: 
+            if not (moptions['min_lr']-moptions['min_lr_nb']<len(nanoraw_events)<moptions['min_lr']+moptions['min_lr_nb']):
+               print("CheckRdMapLen={} {}<{}<{}: false".format(fn, moptions['min_lr']-moptions['min_lr_nb'], len(nanoraw_events), moptions['min_lr']+moptions['min_lr_nb']))
+               tocon = False;
+            if tocon:
+               if (mapped_start<moptions['min_lr_nb'] or 8000-moptions['min_lr_nb']<mapped_start<8000+moptions['min_lr_nb'] or 16000-moptions['min_lr_nb']<mapped_start<16000+moptions['min_lr_nb']) and (mapped_start+len(nanoraw_events)<moptions['min_lr_nb'] or 8000-moptions['min_lr_nb']<mapped_start+len(nanoraw_events)<8000+moptions['min_lr_nb'] or 16000-moptions['min_lr_nb']<mapped_start+len(nanoraw_events)<16000+moptions['min_lr_nb']): pass
+               else:
+                  print("CheckStartEnd= {}{:6d} {:6d} {:6d} {:6d} {:6d}".format(mapped_strand, mapped_start, len(nanoraw_events), mapped_start+len(nanoraw_events), mapped_start/100, (mapped_start+len(nanoraw_events))/100 ))  
+                  tocon = False;
 
          if tocon:
             #nanoraw_events = myFast5.ReadNanoraw_events(mf5)
             #read_al_fa = myFast5.ReadNanoraw_read_alignment(mf5)
-
+            
             for i in range(len(nanoraw_events)):
                if mapped_strand=='+':
                   curpos = i + mapped_start
                else: curpos = mapped_start + len(nanoraw_events)-1 - i
                if moptions.has_key("start_pos") and moptions.has_key("end_pos"):
-                  if curpos<moptions["start_pos"] or curpos>moptions["end_pos"]: 
+                  if curpos<moptions["start_pos"] or curpos>moptions["end_pos"]:
                      continue;
                #if mapped_strand=='-': cur_n = na_bp[genome_fa_pure[i]]
                #else: cur_n = genome_fa_pure[i]
@@ -107,7 +124,7 @@ def mReadSignalBase(moptions):
                moptions[moptions['cur_wrkBase']]['norm_mean'][(mapped_chrom, mapped_strand)][curpos].append(nanoraw_events['norm_mean'][i])
       else:
          #print "INFO: no alignment info for", myFast5.rawAlignment_full, myFast5.raw_event_ful
-         if moptions['outLevel']<=OUTPUT_INFO: print "INFO: no alignment info for", fn  
+         if moptions['outLevel']<=OUTPUT_INFO: print "INFO: no alignment info for", fn
 
 def plot1(moptions, significant_pos, curn):
    m_signal = [] #deque() #[]
@@ -137,7 +154,7 @@ def plot1(moptions, significant_pos, curn):
    if moptions['RegionRankbyST']==1: nearybysize = int(nearybysize*2)
    #for mind in range(cur_ind-moptions["window"], cur_ind+moptions["window"]+1):
    for mind in range(cur_ind-nearybysize, cur_ind+nearybysize+1):
-      if pos_check(moptions['sign_test'], cur_ind, mind): 
+      if pos_check(moptions['sign_test'], cur_ind, mind):
          #print len(moptions['sign_test']), cur_ind, mind
          pk = moptions['sign_test'][mind][0][2]
          pv = moptions['sign_test'][mind][1]
@@ -153,14 +170,14 @@ def plot1(moptions, significant_pos, curn):
                if has_ut==1:
                   m_pos.append('%d/%s\n%.1E\n%.1E\n%.1E\n%.1E' % (pk+1, mna, pv[0][1], pv[1][1],pv[2][1],pv[3][1]))
                else:
-                  m_pos.append('%d/%s\n%.1E\n%.1E' % (pk+1, mna, pv[2][1],pv[3][1])) 
+                  m_pos.append('%d/%s\n%.1E\n%.1E' % (pk+1, mna, pv[2][1],pv[3][1]))
             else:
                if has_ut==1:
                   m_pos.append('%d/%s\n%.1E\n%.1E\n%.1E' % (pk+1, mna, pv[0][1], pv[1][1],pv[2][1]))
                else:
                   m_pos.append('%d/%s\n%.1E' % (pk+1, mna, pv[2][1]))
             m_signal.append(round(sg,3))
- 
+
    #for pk in range(curpos-moptions["window"], curpos+moptions["window"]+1):
    #   pv = None;
    #   if pk==curpos: pv = significant_pos[1]
@@ -185,7 +202,7 @@ def plot1(moptions, significant_pos, curn):
    #         else:
    #            m_pos.append('%d/%s\n%.1E\n%.1E\n%.1E' % (pk+1, mna, pv[0], pv[1],pv[2]))
    #        m_signal.append(round(sg,3))
-      
+
    if not noenough:
       closesize = moptions["neighborPvalues"]*2
       if moptions['RegionRankbyST']==1:
@@ -213,14 +230,14 @@ def plot1(moptions, significant_pos, curn):
           pvsp3[1].append(round(math.log10(pv3[pv3k][1][1]), 3))
           pvsp3[2].append(round(math.log10(pv3[pv3k][2][1]), 3))
           if moptions["neighborPvalues"]>0 and (not moptions["testMethod"]=="ks"):
-             pvsp3[3].append(round(math.log10(pv3[pv3k][3][1]), 3))          
+             pvsp3[3].append(round(math.log10(pv3[pv3k][3][1]), 3))
       print ''
 
       stu = {"Position":robjects.StrVector(poskeys), "Pvalue":robjects.FloatVector(pvsp3[0])}; stru = robjects.DataFrame(stu)
       stt = {"Position":robjects.StrVector(poskeys), "Pvalue":robjects.FloatVector(pvsp3[1])}; strt = robjects.DataFrame(stt)
       stks ={"Position":robjects.StrVector(poskeys), "Pvalue":robjects.FloatVector(pvsp3[2])}; strks= robjects.DataFrame(stks)
       if moptions["neighborPvalues"]>0 and (not moptions["testMethod"]=="ks"):
-         stcb ={"Position":robjects.StrVector(poskeys), "Pvalue":robjects.FloatVector(pvsp3[3])}; 
+         stcb ={"Position":robjects.StrVector(poskeys), "Pvalue":robjects.FloatVector(pvsp3[3])};
       else:
          stcb ={"Position":robjects.StrVector([]), "Pvalue":robjects.FloatVector(pvsp3[3])};
       strcb= robjects.DataFrame(stcb)
@@ -230,9 +247,10 @@ def plot1(moptions, significant_pos, curn):
 
       mrtitle = robjects.StrVector([mtitle])
       mhasbox = robjects.IntVector([has_boxplot])
+      mplotType = robjects.StrVector([moptions['plotType']])
 
       sys.stdout.flush()
-      robjects.globalenv['Base_Most_Significant_Plot'](plotDat, stru, strt, strks, strcb, mrtitle, mhasbox)
+      robjects.globalenv['Base_Most_Significant_Plot'](plotDat, stru, strt, strks, strcb, mrtitle, mhasbox, mplotType)
 
    return noenough
 
@@ -243,12 +261,18 @@ def mboxplot(moptions):
    ggplot = importr('ggplot2')
    importr('gridExtra')
    importr('scales')
+   importr('cowplot')
+   importr('stringr')
+   #importr('dplyr')
 
-   robjects.r(resource_string(__name__, 'Rscript/Base_Most_Significant_Plot.R'))
+   robjects.r(resource_string(__name__, 'Rscript/Base_Most_Significant_Plot.R').decode())
    wdenlarge = 1.7
    if moptions['RegionRankbyST']==1: wdenlarge = 2.5
-   if has_boxplot==1:
-      robjects.r('pdf("'+mresfolder+'/rplot_'+figname+'.pdf", width='+("%.0f" % (moptions["window"]*wdenlarge))+', height=10, onefile = TRUE)')
+   if has_boxplot:
+      if moptions['plotType'] == "Violin":
+          robjects.r('pdf("'+mresfolder+'/rplot_'+figname+'.pdf", width='+("%.0f" % (moptions["window"]*wdenlarge))+', height=10, onefile = TRUE)')
+      else:
+          robjects.r('pdf("'+mresfolder+'/rplot_'+figname+'.pdf", width='+("%.0f" % (moptions["window"]*wdenlarge))+', height=15, onefile = TRUE)')
    else:
       robjects.r('pdf("'+mresfolder+'/rplot_'+figname+'.pdf", width='+("%.0f" % (moptions["window"]*wdenlarge))+', height=4.5, onefile = TRUE)')
 
@@ -263,11 +287,11 @@ def mboxplot(moptions):
       too_close_to_previous = False;
       for pre_pos in output_pos:
          if pre_pos[0]==mostp[0][0] and pre_pos[1]==mostp[0][1] and \
-            abs(pre_pos[2]-mostp[0][2])<closesize: #moptions["neighborPvalues"]*2: 
+            abs(pre_pos[2]-mostp[0][2])<closesize: #moptions["neighborPvalues"]*2:
             too_close_to_previous = True; break;
       if too_close_to_previous: continue;
 
-      if not plot1(moptions, mostp, curn): 
+      if not plot1(moptions, mostp, curn):
          output_pos.append((mostp[0][0], mostp[0][1], mostp[0][2]))
          curn = curn + 1
       if curn==moptions["topN"]: break;
@@ -282,10 +306,10 @@ def mfilter_coverage(moptions):
          if moptions['outLevel']<=OUTPUT_DEBUG: print "Info: ", dsn, sk, len(curds[sk])
          poskeys = curds[sk].keys(); poskeys.sort();
          for pk in poskeys:
-             if len(curds[sk][pk])<moptions["MinCoverage"]: 
+             if len(curds[sk][pk])<moptions["MinCoverage"]:
                 del curds[sk][pk]
                 del moptions[dsn]['base'][sk][pk]
-         if len(curds[sk])==0: 
+         if len(curds[sk])==0:
             del curds[sk]
             del moptions[dsn]['base'][sk]
 
@@ -300,7 +324,10 @@ def m_max_float(fv):
       return sys.float_info.max
    else: return fv
 
-def getUtest(a, b):
+def getKStest(moptions, a, b, m_str):
+  #if len(a)==0 or len(b)==0:
+  #   return [(0, 1), (0, 1), (0, 1)]
+
   st, pu = mannwhitneyu(a, b)
   pu = m_min_float(pu)
   stu = m_max_float(st);
@@ -309,9 +336,29 @@ def getUtest(a, b):
   pt = m_min_float(pt)
   stt = m_max_float(st);
 
-  st, pks = ks_2samp(a, b)
-  pks = m_min_float(pks)
-  stks = m_max_float(st);
+  cov = int(moptions['coverages'][0 if m_str=='+' else 1])
+  if(cov <= 0 or (len(a) <= cov and len(b) <= cov)):
+    st, pks = ks_2samp(a, b) #no st return median
+    pks = m_min_float(pks)
+    stks = m_max_float(st);
+
+  else:
+    _dw_time = moptions['downsampling'];
+    p_array = np.zeros(_dw_time)
+    st_array = np.zeros(_dw_time)
+    for i in range(_dw_time):
+      if(len(a) > cov):
+        a_temp = np.random.choice(a, cov)
+      else: a_temp = a;
+      if(len(b) > cov):
+        b_temp = np.random.choice(b, cov)
+      else: b_temp = b;
+      st, pks = ks_2samp(a_temp, b_temp)
+      p_array[i] = m_min_float(pks)
+      st_array[i] = m_max_float(st)
+    ind = np.argsort(p_array)[int(_dw_time*moptions['downsampling_quantile'])]
+    pks = p_array[ind]
+    stks = st_array[ind]
 
   return [(stu, pu), (stt, pt), (stks, pks)]
 
@@ -362,7 +409,7 @@ def get_combin_pvalue(moptions, i):
       #   return combine_pvalues(pvalue_neighbors)[1]
       #else:
       #   return 1.0
-   else: 
+   else:
       if moptions["neighborPvalues"] == 0: return moptions['sign_test'][i][1][2]
       else: return None;
 
@@ -370,21 +417,25 @@ def mtest2(moptions):
    ds0 = moptions[moptions['ds2'][0]]
    ds1 = moptions[moptions['ds2'][1]]
 
+   print("Start sorting")
    strandkeys = ds0['norm_mean'].keys(); strandkeys.sort()
    #https://docs.python.org/3/library/collections.html#collections.deque
    #Indexed access is O(1) at both ends but slows to O(n) in the middle. For fast random access, use lists instead
    moptions['sign_test'] = [] #deque() #[]
+   if (not moptions['mstd']==0): moptions['sign_test_mstd'] = {}
    start_time = time.time();
    for sk in strandkeys:
       if ds1['norm_mean'].has_key(sk):
          poskeys = ds0['norm_mean'][sk].keys(); poskeys.sort();
          for pk in poskeys:
              if ds1['norm_mean'][sk].has_key(pk):
-                if not ds1['base'][sk][pk] == ds0['base'][sk][pk]: 
+                if not ds1['base'][sk][pk] == ds0['base'][sk][pk]:
                    if moptions['outLevel']<=OUTPUT_ERROR:
                       print 'Error not equal', sk, pk, ds1['base'][sk][pk], ds0['base'][sk][pk], ds1['basedict'][sk][pk].items(), ds0['basedict'][sk][pk].items()
                 #moptions['sign_test'].append([(sk[0], sk[1], pk, ds1['base'][sk][pk]), getUtest(ds0['norm_mean'][sk][pk], ds1['norm_mean'][sk][pk])])
-                moptions['sign_test'].append(((sk[0], sk[1], pk, ds1['base'][sk][pk]), getUtest(ds0['norm_mean'][sk][pk], ds1['norm_mean'][sk][pk])))
+                moptions['sign_test'].append(((sk[0], sk[1], pk, ds1['base'][sk][pk], len(ds0['norm_mean'][sk][pk]), len(ds1['norm_mean'][sk][pk])), getKStest(moptions, ds0['norm_mean'][sk][pk], ds1['norm_mean'][sk][pk], sk[1])))
+                if (not moptions['mstd']==0): 
+                     moptions['sign_test_mstd'][(sk[0], sk[1], pk)] = [[np.mean(ds0['norm_mean'][sk][pk]), np.std(ds0['norm_mean'][sk][pk])], [np.mean(ds1['norm_mean'][sk][pk]), np.std(ds1['norm_mean'][sk][pk])]]
    end_time = time.time();
    if moptions['outLevel']<=OUTPUT_INFO: print ("Producing pvalues: consuming time %d" % (end_time-start_time))
 
@@ -396,10 +447,10 @@ def mtest2(moptions):
    if moptions['rankUse']=='pv':
       rank_use_p_or_st = 'pvalue'; use_pind=1;
    else:
-      rank_use_p_or_st = 'st'; use_pind=0; 
+      rank_use_p_or_st = 'st'; use_pind=0;
 
    sorted_ind = 2;
-   if not moptions["testMethod"]=="ks": #moptions["neighborPvalues"]>0 and len(moptions['sign_test'])>0: 
+   if not moptions["testMethod"]=="ks": #moptions["neighborPvalues"]>0 and len(moptions['sign_test'])>0:
       sorted_ind = 3
    start_time = time.time();
 
@@ -419,16 +470,19 @@ def mtest2(moptions):
 
       strand_specific = defaultdict(lambda: defaultdict(set))
       strans_specific_max = defaultdict(int)
+      strans_specific_min = defaultdict(int)
       for mp in moptions['sign_test']:
-         strand_specific[(mp[0][0], mp[0][1])][mp[0][2]] = (mp[0][3], mp[1])
+         strand_specific[(mp[0][0], mp[0][1])][mp[0][2]] = (mp[0][3], mp[1], mp[0][4],mp[0][5])
          strans_specific_max[(mp[0][0], mp[0][1])] = mp[0][2]
+         if ((mp[0][0], mp[0][1]) not in strans_specific_min) or strans_specific_min[(mp[0][0], mp[0][1])] > mp[0][2]:
+            strans_specific_min[(mp[0][0], mp[0][1])] = mp[0][2]
       strandskeys = strand_specific.keys(); strandskeys.sort()
       for sk in strandskeys:
          if moptions['outLevel']<=OUTPUT_INFO:
             print sk, strans_specific_max[sk], len(strand_specific[sk])
             print strand_specific[sk][3078][0], strand_specific[sk][3079][0],strand_specific[sk][3080][0]
       for sk in strandskeys:
-         for pk in range(0, strans_specific_max[sk], movesize):
+         for pk in range(strans_specific_min[sk], strans_specific_max[sk], movesize):
             pvlist = []; not50 = True
             for wind in windlist:
                curposk = pk + wind
@@ -441,7 +495,7 @@ def mtest2(moptions):
                opvlist = copy.deepcopy(pvlist)
                pvlist.sort()
                if len(pvlist)>5:
-                  windseg.append(((sk[0], sk[1], pk, strand_specific[sk][pk][0]), pvlist, opvlist))
+                  windseg.append(((sk[0], sk[1], pk, strand_specific[sk][pk][0], strand_specific[sk][pk][2],strand_specific[sk][pk][3]), pvlist, opvlist))
       moptions['sorted_sign_test'] = []
       windseg_sort = sorted(windseg, key=lambda mpv: (mpv[1][int(moptions['percentile']*(len(mpv[1])-1)+0.5)], abs(moptions['window']-mpv[2].index(mpv[1][0]))))
 
@@ -459,31 +513,41 @@ def mtest2(moptions):
             if closeneighbor: continue;
             ovlap_higher_rank.append(rmp_ind)
          moptions['sorted_sign_test'].append((windseg_sort[rmp_ind][0],strand_specific[(windseg_sort[rmp_ind][0][0], windseg_sort[rmp_ind][0][1])][windseg_sort[rmp_ind][0][2]][1]))
- 
+
    end_time = time.time();
    if moptions['outLevel']<=OUTPUT_DEBUG: print ("Sorting according to pvalues: consuming time %d" % (end_time-start_time))
 
    if moptions['outLevel']<=OUTPUT_DEBUG: print "Info in sign_test", len(moptions['sorted_sign_test'])
 
 def save_test(moptions):
-   #print 'SaveTest',  moptions['SaveTest']
-   if moptions['SaveTest']==0: return;
+   print 'SaveTest',  moptions['SaveTest']
 
+   if moptions['SaveTest']==0: return;
+   print 'Finish SaveTest'
    txtfile = moptions['outFolder'] + '/' + moptions["FileID"] + '_sign_test.txt'
    if moptions['outLevel']<=OUTPUT_ERROR: print 'Test data is saved in', txtfile
    txtwriter = open(txtfile, 'w')
    for mostp in moptions['sign_test']:
-      txtwriter.write('%s %s %d %s %.3f %.3E %.3f %.3E %.3f %.3E' % (mostp[0][0], mostp[0][1], mostp[0][2]+1, mostp[0][3], mostp[1][0][0], mostp[1][0][1], mostp[1][1][0], mostp[1][1][1], mostp[1][2][0], mostp[1][2][1]))
+      #                 1  2  3  4   5                                        1            2            3              4               5
+      txtwriter.write('%s %s %d %s %d %d %.3f %.3E %.3f %.3E %.3f %.3E' % (mostp[0][0], mostp[0][1], mostp[0][2]+1, mostp[0][3],    mostp[0][4], mostp[0][5],   mostp[1][0][0], mostp[1][0][1], mostp[1][1][0], mostp[1][1][1], mostp[1][2][0], mostp[1][2][1]))
       if (moptions["neighborPvalues"]>0 and (not moptions["testMethod"]=="ks")):
          txtwriter.write(' %.3f %.3E\n' % (mostp[1][3][0], mostp[1][3][1]))
       else:
          txtwriter.write('\n')
+      txtwriter.flush()
    txtwriter.close()
+
+   if (not moptions['mstd']==0):
+      with open(moptions['outFolder'] + '/' + moptions["FileID"] + '_meanstd.cvs', 'w') as mw:
+         for mostp in moptions['sign_test']:
+            _t_k = (mostp[0][0], mostp[0][1], mostp[0][2])
+            mw.write("%s %s %d %s %.3f %.3f %.3f %.3f\n" % (mostp[0][0],mostp[0][1],mostp[0][2],mostp[0][3], moptions['sign_test_mstd'][_t_k][0][0],moptions['sign_test_mstd'][_t_k][0][1], moptions['sign_test_mstd'][_t_k][1][0],moptions['sign_test_mstd'][_t_k][1][1] ))
+            mw.flush();
 
 def ReadAllFast5(moptions):
    #neighbors =  moptions["window"]
 
-   if moptions.has_key("Pos"):
+   if moptions.has_key("Pos") and (not moptions.has_key("Pos2")):
       neighbors =  moptions["window"]
       pos_of_interest = moptions["Pos"]
       start_pos = pos_of_interest - neighbors # -1
@@ -510,6 +574,9 @@ def ReadAllFast5(moptions):
 
       f5num = 0;
       f5sub = [cur_wrkBase]
+
+      moptions["count_file"] = 0
+
       while len(f5sub)>0:
          f5subnew = [] #deque() #[]
          if moptions['outLevel']<=OUTPUT_WARNING: print '.sub_fast5_folder', f5sub
@@ -517,36 +584,39 @@ def ReadAllFast5(moptions):
             f5subadd, f5num= readsubfolder(cursub, moptions, f5num, cur_wrkBase_ind, start_time, f5suf)
             f5subnew.extend(f5subadd)
          f5sub = f5subnew
+      print("Number of files in " + str(moptions['cur_wrkBase'])+ "is " + str(moptions["count_file"]))
 
 
 def readsubfolder(cursub, moptions, f5num, cur_wrkBase_ind, start_time, f5suf='.fast5'):
    f5sub = [] #deque() #[]
    f5list = os.listdir(cursub)
    for f5_ind in range(len(f5list)):
+
      f5 = f5list[f5_ind]
-     if moptions.has_key("checkN") and moptions[moptions['cur_wrkBase']]['norm_mean'].has_key((moptions["Chr"], '-')) and moptions[moptions['cur_wrkBase']]['norm_mean'].has_key((moptions["Chr"], '+')): 
+     if moptions.has_key("checkN") and moptions[moptions['cur_wrkBase']]['norm_mean'].has_key((moptions["Chr"], '-')) and moptions[moptions['cur_wrkBase']]['norm_mean'].has_key((moptions["Chr"], '+')):
         mposkeys1 = moptions[moptions['cur_wrkBase']]['norm_mean'][(moptions["Chr"], '-')].keys();
         mposkeys2 = moptions[moptions['cur_wrkBase']]['norm_mean'][(moptions["Chr"], '+')].keys();
         if len(mposkeys1)>0 and len(moptions[moptions['cur_wrkBase']]['norm_mean'][(moptions["Chr"], '-')][mposkeys1[0]])>=moptions["checkN"] and len(mposkeys2)>0 and len(moptions[moptions['cur_wrkBase']]['norm_mean'][(moptions["Chr"], '+')][mposkeys2[0]])>=moptions["checkN"]:
            break;
 
      if f5[-len(f5suf):]==f5suf:
+        moptions["count_file"] += 1
         moptions['fast5filename'] = cursub+'/'+f5
         if f5num>0 and f5num%1000==0 and moptions['outLevel']<=OUTPUT_WARNING:
            chrkeys = moptions[moptions['cur_wrkBase']]['norm_mean'].keys(); chrkeys.sort()
-           print 'chrkeys', chrkeys
-           mposkeys1 = moptions[moptions['cur_wrkBase']]['norm_mean'][chrkeys[0]].keys();
-           mposkeys2 = moptions[moptions['cur_wrkBase']]['norm_mean'][chrkeys[1]].keys();
+           print 'chrkeys', chrkeys; sys.stdout.flush();
+           mposkeys1 = moptions[moptions['cur_wrkBase']]['norm_mean'][chrkeys[0]].keys() if len(chrkeys)>0 else [];
+           mposkeys2 = moptions[moptions['cur_wrkBase']]['norm_mean'][chrkeys[1]].keys() if len(chrkeys)>1 else [];
 
-           print cur_wrkBase_ind, f5num, f5[-50:], 
-           if len(mposkeys1)>0: 
-              print chrkeys[0], len(mposkeys1), mposkeys1[0], len(moptions[moptions['cur_wrkBase']]['norm_mean'][chrkeys[0]][mposkeys1[0]]), 
-           else: print 0, 
+           print cur_wrkBase_ind, f5num, f5[-50:],
+           if len(mposkeys1)>0:
+              print chrkeys[0], len(mposkeys1), mposkeys1[0], len(moptions[moptions['cur_wrkBase']]['norm_mean'][chrkeys[0]][mposkeys1[0]]),
+           else: print 0,
            if len(mposkeys2)>0:
               print chrkeys[1], len(mposkeys2), mposkeys2[0], len(moptions[moptions['cur_wrkBase']]['norm_mean'][chrkeys[1]][mposkeys2[0]]),
            else: print 0,
            end_time = time.time();
-           print ("consuming time=%d" % (end_time-start_time)), 
+           print ("consuming time=%d" % (end_time-start_time)),
            #start_time = end_time
            if moptions.has_key("checkN"): print moptions["checkN"]
            else: print ''
@@ -554,7 +624,7 @@ def readsubfolder(cursub, moptions, f5num, cur_wrkBase_ind, start_time, f5suf='.
         #print cursub+'/'+f5,
         mReadSignalBase(moptions)
         f5num = f5num + 1
-     elif os.path.isdir(cursub+'/'+f5): 
+     elif os.path.isdir(cursub+'/'+f5):
         if not f5=='mall':
            f5sub.append(cursub+'/'+f5)
    if len(f5sub)>0:
@@ -571,5 +641,3 @@ def mDetect(moptions):
    mtest2(moptions)
 
    mboxplot(moptions)
-
-

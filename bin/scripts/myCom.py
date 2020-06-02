@@ -39,6 +39,7 @@ basecall_1D_base = "Basecall_1D_000"
 basecall_template_base = "BaseCalled_template"
 basecall_events_base = "Events"
 basecall_fastq_base = "Fastq"
+basecall_move_base = "Move"
 
 raw_base = 'Raw'
 reads_base = "Reads"
@@ -60,7 +61,3 @@ rawRead_alignment_base = "read_alignment"
 map_chr_str = "mapped_chrom"
 map_start_str = "mapped_start"
 map_strand_str = "mapped_strand"
-
-
-
-

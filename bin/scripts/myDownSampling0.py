@@ -29,7 +29,7 @@ target_pos = 3072
 target_strand = '-'
 target_chr = 'spel'
 data_labels = ['simulate_case', 'folder_control']
-tofile = False; 
+tofile = False;
 tofile = True;
 test=False;
 #test=True;
@@ -62,13 +62,22 @@ def mSimulate1(moptions):
    while rt<moptions['random_times']:
       moresample = repeat_time
       if moresample>15: moresample = 15;
-      mcase_rand = np.random.choice(len(allcasekeys), int(moptions['CaseSize']*(1+moresample*0.02)), replace=False);
-      mcase1 = {allcasekeys[x]:moptions['casefolder'][allcasekeys[x]] for x in mcase_rand}
 
-      con_random = np.random.choice(len(allcontkeys), int(moptions['CaseSize']*(1+moresample*0.02)), replace=False);
-      mcon1 = {allcontkeys[x]:moptions['controlsample'][allcontkeys[x]] for x in con_random}
+      case_sample_num = int(moptions['CaseSize']*(1+moresample*0.02))
+      if len(allcasekeys) > case_sample_num:
+          mcase_rand = np.random.choice(len(allcasekeys), case_sample_num, replace=False)
+          mcase1 = {allcasekeys[x]:moptions['casefolder'][allcasekeys[x]] for x in mcase_rand}
+      else:
+          mcase1 =  moptions['casefolder']
 
-      if moptions['outLevel']<=OUTPUT_WARNING: #OUTPUT_DEBUG: 
+      cont_sample_num = int(moptions['CaseSize']*(1+moresample*0.02))
+      if len(allcontkeys) > cont_sample_num:
+          con_random = np.random.choice(len(allcontkeys), cont_sample_num, replace=False)
+          mcon1 = {allcontkeys[x]:moptions['controlsample'][allcontkeys[x]] for x in con_random}
+      else:
+          mcon1 = moptions['controlsample']
+
+      if moptions['outLevel']<=OUTPUT_WARNING: #OUTPUT_DEBUG:
          print "randtime, len(case), len(con)) ", rt, len(mcase1), len(mcon1)
 
       moptions['sign_test'] = []
@@ -86,21 +95,21 @@ def mSimulate1(moptions):
       coverage_list = []
       for cur_wrkBase_ind in range(len(moptions['ds2'])):
          cur_wrkBase = moptions['ds2'][cur_wrkBase_ind]
-	 chrstr = moptions[cur_wrkBase]['norm_mean'].keys();
-	 for curcs in chrstr:
+         chrstr = moptions[cur_wrkBase]['norm_mean'].keys();
+         for curcs in chrstr:
             if curcs[1] == target_strand and curcs[0]==target_chr:
                for pos in range(target_pos-3, target_pos+4):
                   if len(moptions[cur_wrkBase]['norm_mean'][curcs][pos])<(0.95*moptions['CaseSize']/5):
                      has_enough_coverage_for_region_of_interest += 1;
-		  coverage_list.append('%d:%d' % (pos, len(moptions[cur_wrkBase]['norm_mean'][curcs][pos])))
-      if moptions['outLevel']<=OUTPUT_WARNING: 
+                  coverage_list.append('%d:%d' % (pos, len(moptions[cur_wrkBase]['norm_mean'][curcs][pos])))
+      if moptions['outLevel']<=OUTPUT_WARNING:
          print rt, 'Coverage list', ' '.join(coverage_list), "o", repeat_time, int(0.95*moptions['CaseSize']/5), has_enough_coverage_for_region_of_interest, cur_repeat_time
          sys.stdout.flush()
       if has_enough_coverage_for_region_of_interest > 2:
          print '\tNo enough coverage', rt
-	 if has_enough_coverage_for_region_of_interest > 3 and cur_repeat_time > 5:
+         if has_enough_coverage_for_region_of_interest > 3 and cur_repeat_time > 5:
             repeat_time += 1;
-	 cur_repeat_time += 1   
+         cur_repeat_time += 1
          continue;
 
       myDetect.mfilter_coverage(moptions)
@@ -112,14 +121,14 @@ def mSimulate1(moptions):
       if moptions['outLevel']<=OUTPUT_INFO: print ("consuming time=***%d*** for cov=%d_randtime=%d" % (end_time-start_time, moptions['CaseSize'], rt))
       sys.stdout.flush()
       rt = rt + 1; cur_repeat_time = 0; #repeat_time=0
-   
+
    if moptions['outLevel']<=OUTPUT_INFO: print ''
    if moptions['outLevel']<=OUTPUT_WARNING: print moptions['CaseSize'], moptions['CovgDis']
    sys.stdout.flush()
 
    cur_file_base = moptions['outFolder'] + '/' + moptions["FileID"]
    opfile = cur_file_base + '.output'
-   mySaveRes(opfile, moptions) 
+   mySaveRes(opfile, moptions)
    os.system('touch '+cur_file_base+'.done')
 
 def mySaveRes(opfile, moptions, format1='%d', format2=' %d'):
@@ -127,10 +136,10 @@ def mySaveRes(opfile, moptions, format1='%d', format2=' %d'):
    if isinstance(moptions['CovgDis'], list):
       fh.write(format1 % moptions["CaseSize"])
       for currank in moptions['CovgDis']:
-         if int(currank)<0: 
+         if int(currank)<0:
             if moptions['outLevel']<=OUTPUT_INFO: print 'Negative rank', currank, int(currank)
             continue;
-         
+
          fh.write(format2 % currank)
       fh.write('\n')
    else:
@@ -142,7 +151,7 @@ def mySaveRes(opfile, moptions, format1='%d', format2=' %d'):
               if moptions['outLevel']<=OUTPUT_INFO: print 'Negative rank', currank, int(currank)
 	      continue;
            fh.write(format2 % currank)
-	fh.write('\n')   
+	fh.write('\n')
    fh.close();
 
 def mSimulat2(moptions):
@@ -169,7 +178,7 @@ def mSimulat2(moptions):
       qscmd = 'qstat -u "'+current_username+'" | awk \'NR>2 && ($5=="r" || $5=="qw") && substr($3, 1, '+str(len(job_name_base))+')=="'+job_name_base+'" {print $4}\' | sort | wc -l'
 
       moptions['CaseSizes'] = []
-      moptions['CaseSizes'].append(60); 
+      moptions['CaseSizes'].append(60);
       moptions['CaseSizes'].append(80);
       moptions['CaseSizes'].append(100);
       moptions['CaseSizes'].append(200);
@@ -197,7 +206,7 @@ def mSimulat2(moptions):
       time.sleep(10)
       if not moptions.has_key('CovgDis'):
           moptions['CovgDis'] = defaultdict(list)
-      
+
       efile = ('%s/ds_%s_merge.e' % (moptions['outFolder'], moptions["FileID"]))
       ofile = ('%s/ds_%s_merge.o' % (moptions['outFolder'], moptions["FileID"]))
       opfile = ('%s/ds_%s_merge.output' % (moptions['outFolder'], moptions["FileID"]))
@@ -214,7 +223,7 @@ def mSimulat2(moptions):
 
       print qscmd
       default_wait_time = 100;
-      wait_time = default_wait_time; 
+      wait_time = default_wait_time;
       max_wait_time = 300; min_wait_time = 30;
       zero_qstat_jobs_times = 0;
       jobkeys = total_jobs.keys();
@@ -232,7 +241,7 @@ def mSimulat2(moptions):
                   curp = int(lsp[0])
 		  if moptions['outLevel']<=OUTPUT_DEBUG: print jk, lsp; sys.stdout.flush()
 		  moptions['CovgDis'][curp].extend(lsp[1:])
-               
+
 	       if os.path.getsize(total_jobs[jk][1])>0:
                   if moptions['outLevel']<=OUTPUT_DEBUG: print ('tail -vn +1 %s >> %s' % (total_jobs[jk][1], efile)); sys.stdout.flush()
                   os.system('tail -vn +1 %s >> %s' % (total_jobs[jk][1], efile))
@@ -243,7 +252,7 @@ def mSimulat2(moptions):
                   if moptions['outLevel']<=OUTPUT_DEBUG: print ('tail -vn +1 %s >> %s' % (total_jobs[jk][3], opfile)); sys.stdout.flush()
 	          os.system('tail -vn +1 %s >> %s' % (total_jobs[jk][3], opfile))
                rmcmd = ' '.join(['rm', total_jobs[jk][1], total_jobs[jk][2], total_jobs[jk][3], total_jobs[jk][4]])
-	       if moptions['outLevel']<=OUTPUT_DEBUG: 
+	       if moptions['outLevel']<=OUTPUT_DEBUG:
                   rmcmd = ' '.join(['rm', total_jobs[jk][1], total_jobs[jk][4]])
                   print 'RM', rmcmd
 	       os.system(rmcmd)
@@ -260,7 +269,7 @@ def mSimulat2(moptions):
 	 jobkeys = total_jobs.keys();
 
 	 if len(jobkeys)>0 and runjobs==0:
-            if moptions['outLevel']<=OUTPUT_WARNING: 
+            if moptions['outLevel']<=OUTPUT_WARNING:
                print ('Warning!!! Expected %d jobs running. But %d jobs running using qstat' % (len(jobkeys), runjobs))
 	       print 'Please check whether error occur. The program will exit after this message appears in three consecutive times.'
             zero_qstat_jobs_times = zero_qstat_jobs_times + 1
@@ -268,9 +277,9 @@ def mSimulat2(moptions):
                print 'Unfished jobs:'
 	       jobkeys.sort()
 	       print '\t', jobkeys
-	       if wait_time>default_wait_time: 
+	       if wait_time>default_wait_time:
                   wait_time = default_wait_time
-               break;    
+               break;
          else: zero_qstat_jobs_times = 0
 
          if len(jobkeys)>0:
@@ -302,13 +311,13 @@ def group_rank(moptions):
 
    mybin, split_points, myRankStr = mySimulate.myBinDefault()
 
-   percKeys = moptions['CovgDis'].keys(); 
+   percKeys = moptions['CovgDis'].keys();
    for pk in percKeys:
       for curr in moptions['CovgDis'][pk]:
          curr = int(curr)
          if 0<curr<=split_points[-1]:
             cur_r_str = mybin[curr]
-         else: 
+         else:
             if curr==0: print "Warning!!! Rank at pos 0"
 	    if curr<0: print "Warning!!! Negative Rank", curr
             cur_r_str = myRankStr[-1]
@@ -447,7 +456,7 @@ def mplotall(moptions):
                   testmethod_all.extend(['%s_%s_%s' % (conk, cask, testmethod)]*len(perclist))
 		  case_control_all.extend(['%s_%s' % (conk, cask)]*len(perclist))
                else:
-                  print 'need perpage parameters', moptions['perpage'] 
+                  print 'need perpage parameters', moptions['perpage']
                   sys.exit()
 
 
@@ -469,11 +478,8 @@ def mplotall(moptions):
             robjects.r('pdf("'+mresfolder+'/hist_'+figname+'.pdf", width='+("%.0f" % (10)+', height=6, onefile = TRUE)'))
             robjects.globalenv['Hist_sim_plot9'](mdfperc, spvector, rankstrvector, xlabstr)
             robjects.r('dev.off()')
-         elif moptions['pdfortif']=='tif': 
+         elif moptions['pdfortif']=='tif':
             robjects.r(resource_string(__name__, 'Rscript/Hist_sim_plot9tif.R'))
             xlabstr =  robjects.StrVector(["#subreads with modifications"])
             robjects.globalenv['Hist_sim_plot9'](mdfperc, spvector, rankstrvector, xlabstr, mresfolder+'/hist_'+figname)
          else: print 'Error Wrong output file type', moptions['pdfortif']
-
-      
-

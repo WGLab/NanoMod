@@ -112,6 +112,7 @@ def mDetect(margs):
    testPackage()
 
    moptions, ErrorMessage = mCommonParam(margs)
+   moptions['mstd'] = margs.mstd
    if not margs.Pos=="":
       mpos = margs.Pos.split(":")
       moptions["Chr"] = mpos[0]
@@ -119,6 +120,12 @@ def mDetect(margs):
          moptions["Pos"] = int(mpos[1])-1
          if moptions["Pos"]<0:
             ErrorMessage = ErrorMessage + ("\n\tThe position (%d) of interest should not be less than 0" % moptions["Pos"])
+      if len(mpos)>2: ###########
+         moptions["Pos2"] = int(mpos[2])-1
+         if moptions["Pos2"]<0:
+            ErrorMessage = ErrorMessage + ("\n\tThe position (%d) of interest should not be less than 0" % moptions["Pos2"])
+         if moptions["Pos2"] - moptions["Pos"] < 1:
+            ErrorMessage = ErrorMessage + ("\n\tThe end position (%d) is not larger than the start position (%d)" % moptions["Pos2"], moptions["Pos"])
 
    #moptions["MinCoverage"] = margs.MinCoverage
    #if moptions["MinCoverage"]<3:
@@ -143,12 +150,29 @@ def mDetect(margs):
       parser.print_help();
       parser.parse_args(['detect', '--help']);
       sys.exit(1)
-  
+
    #moptions['checkN'] = 50
 
    moptions['wrkBase1'] = format_last_letter_of_folder(moptions['wrkBase1'])
    moptions['wrkBase2'] = format_last_letter_of_folder(moptions['wrkBase2'])
+   moptions['plotType'] = margs.plotType
+   moptions['downsampling'] = margs.downsampling
+   moptions['downsampling_quantile'] = margs.downsampling_quantile
+   moptions['min_lr'] = margs.min_lr
+   moptions['min_lr_nb'] = margs.min_lr_nb
 
+   #if moptions['downsampling']:
+   #    moptions['Percentages'] = margs.Percentages.split(',')
+   #    for ipind in range(len(moptions['Percentages'])):
+   #        moptions['Percentages'][ipind] = float(moptions['Percentages'][ipind])
+   #        if moptions['Percentages'][ipind]<10**-5:
+   #            ErrorMessage = ErrorMessage + ("\n\tThe Percentage (%.6f) is too small or large than %.6f" % (moptions['Percentages'][ipind], 10**-5))
+   #            if int(moptions['Percentages'][ipind]) >= 1:
+   #                moptions['Percentages'][ipind] = 1.1
+
+   moptions['coverages'] = map(int, margs.coverages.split('-'))
+   if len(moptions['coverages'])==1:
+      moptions['coverages'] = [moptions['coverages'][0],moptions['coverages'][0]]
    printParameters(moptions)
    myDetect.mDetect(moptions)
 
@@ -188,7 +212,7 @@ def mSimulate(margs):
    moptions['wrkBase2'] = format_last_letter_of_folder(moptions['wrkBase2'])
    if (not moptions["wrkBase3"]==None):
       moptions['wrkBase3'] = format_last_letter_of_folder(moptions['wrkBase3'])
-   
+
    printParameters(moptions)
    mySimulate.mSimulate(moptions)
 
@@ -297,12 +321,12 @@ def mAnnotate(margs):
    moptions['files_per_thread'] = margs.files_per_thread
    if moptions['files_per_thread']<1:
       ErrorMessage = ErrorMessage + ("\n\t The number (%d) of fast5 files per thread is too small" % moptions['files_per_thread'])
-   
+
    moptions['basecall_1d'] = margs.basecall_1d
    moptions['basecall_2strand'] = margs.basecall_2strand
-   moptions['recursive'] = margs.recursive 
+   moptions['recursive'] = margs.recursive
    moptions['alignStr'] = margs.alignStr; #'bwa'
-
+   #moptions['continue'] = margs.continue
    if not ErrorMessage=="":
       ErrorMessage = "Please provide correct parameters" + ErrorMessage
       print ErrorMessage, '\n'
@@ -350,13 +374,21 @@ python %(prog)s --wrkBase1 ctrl_oligo_SpeI_cut --wrkBase2 Nicotine_SpeI_cut \n \
 ", formatter_class=RawTextHelpFormatter)
 
 parser_detect.add_argument("--Pos", default="", help="The position of interest: chr:pos. Default: ''")
+parser_detect.add_argument("--mstd", type=bool, default=False, help="Whether save mean and std. Default: False")
 #parser_detect.add_argument("--MinCoverage", type=int, default=30, help="The minimum coverage for the base of interest and its neighbors. Default: 30.")
 #parser_detect.add_argument("--topN", type=int, default=30, help="The topN most significance test. Default: 10")
 #parser_detect.add_argument("--neighborPvalues", type=int, default=1, help="The number of neighbor p-values are used for combining p-values using fisher. Default:2.")
 #parser_detect.add_argument("--testMethod", default="ks", choices=['fisher', 'stouffer', 'ks'], help="Which method is used for test statistics: fisher, stouffer or KS-test. Leave empty for KS-test.")
 
 parser_detect.add_argument("--wrkBase2", help="The working base folder for the second group.")
+parser_detect.add_argument("--plotType", type=str, default="Density", choices=["Violin", "Density"], help="The type of the plot.")
 
+parser_detect.add_argument("--min_lr", default=500, type=int, help="The minimum length of long reads.")
+parser_detect.add_argument("--min_lr_nb", default=0, type=int, help="The variance of requried length of long reads: [min_lr-min_lr_nb, [min_lr+min_lr_nb]. Default: 0(>min_lr).")
+parser_detect.add_argument("--downsampling_quantile", default=0.25, type=float, help="The smallest quantile p-value.")
+parser_detect.add_argument("--downsampling", default=100, type=int, help="How many times for  downsampling: >1.")
+#parser_detect.add_argument("--Percentages", type=str, default='0.3', help="The percentages (seperated by ',', for exmaple '0.3,0.2,0.4,0.5,0.1') of reads with modifications. Default: '0.3'.")
+parser_detect.add_argument("--coverages", type=str, default='0-0', help="The coverage threshold. DownSampling will be preformed if the covrage of a site is over the threshold. Default: '0-0'(no downsampling)")
 parser_detect.set_defaults(func=mDetect)
 
 parser_simulate = subparsers.add_parser('simulate', parents=[parent_parser], help="Simulate with different percentage of modifications", description="Simulation with different percentage of modifications", epilog="For example, \n \
@@ -422,6 +454,7 @@ parser_annotate.add_argument("--basecall_2strand", default="BaseCalled_template"
 parser_annotate.add_argument("--MinNumSignal", type=int, default=4, help="Mininum number of signals for an event. Default:4")
 parser_annotate.add_argument("--recursive", type=int, default=1, choices=[0,1], help="Recurise to find fast5 files. Default:0")
 parser_annotate.add_argument("--alignStr", type=str, default='bwa', choices=["bwa","minimap2"], help="Alignment tools (bwa or minimap2 is supported). Default: bwa")
+#parser_annotate.add_argument("--continue", default=False, action="store_true", type=str, default='bwa',  help="Continue performing annotation")
 
 parser_annotate.set_defaults(func=mAnnotate);
 
@@ -432,4 +465,3 @@ if len(sys.argv)<2:
 else:
    args = parser.parse_args()
    args.func(args);
-
