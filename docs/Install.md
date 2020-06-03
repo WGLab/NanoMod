@@ -30,11 +30,7 @@
 	        + scales
 
 ## Test:
-
-	```
-   source activate py27nanomod
-   cd NanoMod
-   ```
+   To run `NanoMod`, users need to `source activate py27nanomod` and then go to the NanoMod folder.
 
 	* The script to be run is bin/NanoMod.py: `python bin/NanoMod.py`
 	
