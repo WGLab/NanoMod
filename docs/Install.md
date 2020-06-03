@@ -30,10 +30,11 @@
 	        + scales
 
 ## Test:
+
 	```
    source activate py27nanomod
    cd NanoMod
-   ```
+   ``
 
 	* The script to be run is bin/NanoMod.py: `python bin/NanoMod.py`
 	
