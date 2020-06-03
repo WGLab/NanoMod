@@ -1400,9 +1400,10 @@ def handle_line(moptions, sp_param, f5align):
    elif int(pos)==0: sp_param['f5status'] = "pos is 0"
    elif cigar=='*': sp_param['f5status'] = "cigar is *"
    elif rname=='*': sp_param['f5status'] = "rname is *"
+   elif not ((flag&0x900)==0): sp_param['f5status'] = "Non-primary alignment"
    if not sp_param['f5status']=="": return qname
 
-   if (qname not in f5align) or f5align[qname][0]<int(mapq):
+   if ((qname not in f5align) or f5align[qname][0]<int(mapq)):
       f5align[qname] = (int(mapq), int(flag), rname, int(pos), cigar, seq)
 
    return qname

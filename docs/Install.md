@@ -1,5 +1,20 @@
 
-## Prerequisites:
+## Download the tool
+   * git clone https://github.com/WGLab/NanoMod
+
+## Install dependent packages
+
+### Option 1: 
+  Users can simple run the commands below to install the dependent packages
+  ```
+  cd NanoMod
+  conda create -n py27nanomod env.py27nanomod.yml
+  ```
+  source activate py27nanomod 
+  
+### Option 2:
+  Optionally, you can also install the dependent packages below by yourself.
+  Prerequisites:
 	* Python 2.7
 	* python packages:
 	        + h5py
@@ -13,8 +28,11 @@
 	        + gridExtra
 	        + scales
 
-## Install:
-	* git clone https://github.com/WGLab/NanoMod
+## Test:
+	```
+   source activate py27nanomod
+   cd NanoMod
+   ```
 	* The script to be run is bin/NanoMod.py: `python bin/NanoMod.py`
 	
 ## Usage:
