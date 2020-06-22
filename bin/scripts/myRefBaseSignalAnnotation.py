@@ -116,7 +116,7 @@ def getEvent(moptions, sp_param):
   if not sp_param['f5status']=="": return;
 
   try:
-     if sp_param['basecaller'] == 'Guppy':
+     if 'basecaller' in sp_param and sp_param['basecaller'] == 'Guppy':
         event_path = ''.join([fast5_analysis, '/', moptions['basecall_1d'], '/', moptions['basecall_2strand'], '/', fast5_move])
      else:
         event_path = ''.join([fast5_analysis, '/', moptions['basecall_1d'], '/', moptions['basecall_2strand'], '/', fast5_events])
@@ -129,7 +129,7 @@ def getEvent(moptions, sp_param):
 
   if sp_param['f5status'] == "":
      sp_param['events_data'] = events_data
-     if sp_param['basecaller'] == 'Guppy': #use move table
+     if 'basecaller' in sp_param and sp_param['basecaller'] == 'Guppy': #use move table
         fq_path = ''.join([fast5_analysis,'/',moptions['basecall_1d'],'/',moptions['basecall_2strand'],'/',fast5_basecall_fq])
         fq_data = sp_param['f5reader'][fq_path][()]
         fq_data = (fq_data.decode(encoding="utf-8")).split('\n')
@@ -1400,7 +1400,7 @@ def handle_line(moptions, sp_param, f5align):
    elif int(pos)==0: sp_param['f5status'] = "pos is 0"
    elif cigar=='*': sp_param['f5status'] = "cigar is *"
    elif rname=='*': sp_param['f5status'] = "rname is *"
-   elif not ((flag&0x900)==0): sp_param['f5status'] = "Non-primary alignment"
+   elif not ((int(flag)&0x900)==0): sp_param['f5status'] = "Non-primary alignment"
    if not sp_param['f5status']=="": return qname
 
    if ((qname not in f5align) or f5align[qname][0]<int(mapq)):
@@ -1445,7 +1445,7 @@ def correctAndAnnotate_manager(moptions):
    #else: f5files = glob.glob(os.path.join(moptions['wrkBase1'],"*.fast5" ))
    #f5files = ['tofixerror/VAIODG_20170628_FNFAH09129_MN19183_mux_scan_TrainSeq3_Bio_pur_SpeI_cut_31257_ch166_read31_strand.fast5']
    #f5files = ['SingleModDs/IdU/ds400/26/VAIODG_20170809_FNFAH20109_MN19183_mux_scan_TrainSeq3_IdU_SpeI_cut_96151_ch473_read32_strand.fast5']
-
+   print("Total f5={}".format(len(f5files)))
 
    get_kmer_corrected_info(moptions)
 
