@@ -8,7 +8,7 @@
   Users can simple run the commands below to install the dependent packages
   ```
   cd NanoMod
-  conda create -n py27nanomod env.py27nanomod.yml
+  conda env create -f env.py27nanomod.yml
   ```
   
 ### Option 2:
