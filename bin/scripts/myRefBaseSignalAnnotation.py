@@ -410,7 +410,7 @@ def correctAndAnnotate(moptions, f5files):
       cmd_opt = ['-ax', 'map-ont', moptions['Ref'], temp_fa.name]
    returncode = subprocess.call([moptions['alignStr'],]+cmd_opt, stdout=temp_sam)
    if not returncode==0:
-      print ('Fatal Error!!! returncode is non-zero(%d) for "%s"' % (returncode, curcmd))
+      print ('Fatal Error!!! returncode is non-zero(%d) for "%s"' % (returncode, (moptions['alignStr']+" "+' '.join(cmd_opt) )))
       errkey = "Cannot running aligment"
       for f5k in f5keys:
          moptions["Error"][errkey].append(f5data[f5k][3])
